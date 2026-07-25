@@ -7,11 +7,11 @@
 <a href="https://encore.rem01gaming.dev"><img src="https://img.shields.io/badge/Apache-white?style=for-the-badge&logo=andela&logoColor=white&label=License&labelColor=222" alt="License"></a>
 </p>
 
-## About Encore Tweaks
+## About Encore-Fork
 
-**Encore Tweaks** is a dynamic Magisk module designed to maximize your device's gaming performance while intelligently preserving battery life during everyday use. Perfect for gamers who demand smooth gameplay without compromising daily usability!
+**Encore-Fork** is an enhanced dynamic Magisk/KSU/APatch performance module based on Encore Tweaks by Rem01Gaming. Designed to maximize gaming performance while intelligently preserving battery life, with special optimizations for MediaTek MT6789 and expanded multi-language WebUI support!
 
-More info about this project on [Official Encore Tweaks website](https://encore.rem01gaming.dev/)
+More info about the original project on [Official Encore Tweaks website](https://encore.rem01gaming.dev/)
 
 ## Supported Root Managers
 

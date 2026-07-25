@@ -1,0 +1,7 @@
+# HyperFlow System Props for Latency & Touch Responsiveness
+persist.sys.smartpower.display_camera_fps_enable=false
+persist.sys.smartpower.display.enable=false
+persist.vendor.fps.switch.thermal=false
+persist.vendor.display.touch.idle.enable=false
+persist.sys.joyose.fps_boost=true
+persist.sys.wifi.low_latency=1

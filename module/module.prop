@@ -1,9 +1,9 @@
-id=encore
-name=Encore Tweaks
+id=encore_fork
+name=Encore-Fork
 version=
 versionCode=
-author=Rem01Gaming
-description=Special performance module for your Device.
-updateJson=https://encore.rem01gaming.dev/api/update.json
+author=Rem01Gaming (Forked & Enhanced)
+description=Special performance module for your Device (Optimized for MT6789).
+updateJson=
 banner=banner.webp
 webuiIcon=webroot/icon.webp

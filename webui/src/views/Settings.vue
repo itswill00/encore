@@ -331,7 +331,7 @@ const openExportModal = () => {
   showExportModal.value = true
 
   setTimeout(() => {
-    exec(`/data/adb/modules/encore/system/bin/encore_utility save_logs`)
+    exec(`/data/adb/modules/encore_fork/system/bin/encore_utility save_logs`)
       .then(({ errno, stdout, stderr }) => {
         if (errno !== 0) {
           exportStatus.value = 'error'

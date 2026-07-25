@@ -31,6 +31,7 @@ change_cpu_gov() {
 
 save_logs() {
 	report_dir="$MODULE_CONFIG/encore_bugreport_temp"
+	rm -rf "$report_dir"
 	mkdir -p "$report_dir/pstore"
 
 	log_file="encore_bugreport_$(date +"%Y-%m-%d_%H_%M").tar.gz"
@@ -65,15 +66,14 @@ save_logs() {
 
 	(
 		cd "$report_dir"
-		[ -f "$log_file" ] && rm -f "$log_file"
-		tar -czf "$log_file" .
+		tar -czf "../$log_file" . 2>/dev/null
 	)
 
 	target_dir="/sdcard/Download"
 	[ ! -d "$target_dir" ] && mkdir -p "$target_dir"
 
-	if [ -f "$report_dir/$log_file" ]; then
-		cp "$report_dir/$log_file" "$target_dir/$log_file"
+	if [ -f "$MODULE_CONFIG/$log_file" ]; then
+		mv "$MODULE_CONFIG/$log_file" "$target_dir/$log_file"
 		echo "$target_dir/$log_file"
 		rm -rf "$report_dir"
 		return 0

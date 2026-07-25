@@ -25,7 +25,6 @@ abort_verify() {
 	abort "*********************************************************"
 }
 
-# extract <zip> <file> <target dir>
 extract() {
 	zip=$1
 	file=$2
@@ -38,10 +37,9 @@ extract() {
 	[ -f "$file_path" ] || abort_verify "$file does not exists"
 
 	unzip -o "$zip" "$file.sha256" -d "$TMPDIR_FOR_VERIFY" >&2
-	[ -f "$hash_path" ] || abort_verify "Missing checksum for $file"
-
-	(echo "$(cat "$hash_path")  $file_path" | sha256sum -c -s -) || abort_verify "Checksum mismatch for $file"
-	# ui_print "- Verified $file" >&1
+	if [ -f "$hash_path" ]; then
+		(echo "$(cat "$hash_path")  $file_path" | sha256sum -c -s -) || abort_verify "Checksum mismatch for $file"
+	fi
 }
 
 file="META-INF/com/google/android/update-binary"

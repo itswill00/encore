@@ -13,6 +13,8 @@ export const useHomeStore = defineStore('home', () => {
   const kernelVersion = ref('')
   const chipsetName = ref('')
   const androidSDK = ref('')
+  const deviceCodename = ref('')
+  const isTanzaniteDevice = ref(false)
   const daemonStatusRaw = ref('loading') // 'loading', 'running', 'stopped', 'error'
   const daemonError = ref('')
   const logoImage = ref('/encore_sleeping.avif')
@@ -32,6 +34,7 @@ export const useHomeStore = defineStore('home', () => {
       getCurrentProfile(),
       getKernelVersion(),
       getChipset(),
+      getDeviceCodename(),
     ])
 
     startProfileMonitoring()
@@ -197,6 +200,22 @@ export const useHomeStore = defineStore('home', () => {
     }
   }
 
+  async function getDeviceCodename() {
+    try {
+      if (!KernelSU.isKSUWebUI()) {
+        throw new Error('Not running on KSU WebUI')
+      }
+
+      const { stdout } = await exec('getprop ro.product.device')
+      const device = stdout.trim().toLowerCase()
+      deviceCodename.value = device
+      isTanzaniteDevice.value = device.includes('tanzanite')
+    } catch (error) {
+      deviceCodename.value = ''
+      isTanzaniteDevice.value = false
+    }
+  }
+
   return {
     // Raw state
     daemonPidRaw,
@@ -205,6 +224,8 @@ export const useHomeStore = defineStore('home', () => {
     kernelVersion,
     chipsetName,
     androidSDK,
+    deviceCodename,
+    isTanzaniteDevice,
     daemonStatusRaw,
     daemonError,
     logoImage,
@@ -220,5 +241,6 @@ export const useHomeStore = defineStore('home', () => {
     getCurrentProfile,
     getKernelVersion,
     getChipset,
+    getDeviceCodename,
   }
 })

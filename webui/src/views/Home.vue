@@ -92,6 +92,36 @@
           </div>
         </div>
 
+        <!-- Device Specific Enhancements (Tanzanite) -->
+        <div
+          v-if="homeStore.isTanzaniteDevice"
+          class="bg-surface-container mb-4 p-4 rounded-xl text-on-surface border border-primary/25"
+        >
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+              <StarIcon class="text-primary w-4 h-4" />
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold text-primary">Tanzanite Special Enhancements</h3>
+              <span class="text-xs text-on-surface-variant">Redmi Note 14 4G (MT6789)</span>
+            </div>
+          </div>
+          <div class="text-xs text-on-surface-variant space-y-1.5 pt-1 pl-1">
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              <span>GED GPU Floor 800MHz (Gaming) / 550MHz (UI)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              <span>sugov_ext Rate Limits & Touch Idle Bypass</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              <span>PSI Memory Stall Auto-Trim Active</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Support Me Button -->
         <RippleComponent
           @click="handleDonateClick"

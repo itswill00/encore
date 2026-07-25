@@ -179,7 +179,7 @@ if [ "$KSU" = "true" ] || [ "$APATCH" = "true" ]; then
 
 	# symlink ourselves on $PATH
 	manager_paths="/data/adb/ap/bin /data/adb/ksu/bin"
-	BIN_PATH="/data/adb/modules/encore/system/bin"
+	BIN_PATH="$MODPATH/system/bin"
 	for dir in $manager_paths; do
 		[ -d "$dir" ] && {
 			ui_print "- Creating symlink in $dir"
@@ -199,7 +199,7 @@ unzip -o "$ZIPFILE" "webroot/*" -d "$MODPATH" -x "*.sha256" >&2
 [ -f /data/local/tmp/encore_logo.png ] && rm -f /data/local/tmp/encore_logo.png
 
 # Set configs
-ui_print "- Encore Tweaks configuration setup"
+ui_print "- Encore-Fork configuration setup"
 make_dir "$MODULE_CONFIG"
 unzip -o "$ZIPFILE" "config/*" -d "$MODULE_CONFIG" -x "*.sha256" >&2
 mv "$MODULE_CONFIG/config/"* "$MODULE_CONFIG/"

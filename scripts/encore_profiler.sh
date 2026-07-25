@@ -237,8 +237,12 @@ mediatek_performance() {
 		done
 	fi
 
-	# Force off FPSGO
+	# Force off FPSGO / Enable FPSGO FBT Boost
 	apply 0 /sys/kernel/fpsgo/common/force_onoff
+	apply 1 /sys/kernel/fpsgo/fbt/boost_ta
+	apply 1 /sys/kernel/fpsgo/fbt/ultra_rescue
+	apply 1 /sys/kernel/fpsgo/fbt/switch_idleprefer
+	apply 10 /sys/kernel/fpsgo/fbt/light_loading_policy
 
 	# MTK Power and CCI mode
 	apply 1 /proc/cpufreq/cpufreq_cci_mode
@@ -250,15 +254,32 @@ mediatek_performance() {
 	# EAS/HMP Switch
 	apply 0 /sys/devices/system/cpu/eas/enable
 
-	# Disable GED KPI
+	# Disable GED KPI and enable GED Boost
 	apply 0 /sys/module/sspm_v3/holders/ged/parameters/is_GED_KPI_enabled
+	apply 1 /sys/module/ged/parameters/boost_gpu_enable
+	apply 1 /sys/module/ged/parameters/enable_gpu_boost
+	apply 1 /sys/module/ged/parameters/ged_smart_boost
+	apply 550000 /sys/module/ged/parameters/gpu_bottom_freq
+	apply 25 /sys/module/ged/parameters/g_fb_dvfs_threshold
+	apply 50 /sys/module/ged/parameters/gx_fb_dvfs_margin
+
+	# sugov_ext Rate Limits (Instant Ramp-up)
+	for policy in /sys/devices/system/cpu/cpufreq/policy*/sugov_ext; do
+		[ -d "$policy" ] && {
+			apply 0 "$policy/up_rate_limit_us"
+			apply 2000 "$policy/down_rate_limit_us"
+		}
+	done
 
 	# GPU Frequency
 	apply 0 /proc/gpufreq/gpufreq_opp_freq
 	apply -1 /proc/gpufreqv2/fix_target_opp_index
+	apply -1 /proc/gpufreq/fix_target_opp_index
 
 	[ $LITE_MODE -eq 0 ] && {
-		if [ -d /proc/gpufreqv2 ]; then
+		if [ -f /proc/gpufreq/fix_target_opp_index ]; then
+			apply 0 /proc/gpufreq/fix_target_opp_index
+		elif [ -d /proc/gpufreqv2 ]; then
 			apply 0 /proc/gpufreqv2/fix_target_opp_index
 		else
 			gpu_freq=$(sed -n 's/.*freq = \([0-9]\{1,\}\).*/\1/p' /proc/gpufreq/gpufreq_opp_dump | head -n 1)
@@ -449,6 +470,9 @@ mediatek_normal() {
 
 	# Free FPSGO
 	apply 2 /sys/kernel/fpsgo/common/force_onoff
+	apply 0 /sys/kernel/fpsgo/fbt/boost_ta
+	apply 0 /sys/kernel/fpsgo/fbt/ultra_rescue
+	apply 0 /sys/kernel/fpsgo/fbt/switch_idleprefer
 
 	# MTK Power and CCI mode
 	apply 0 /proc/cpufreq/cpufreq_cci_mode
@@ -460,12 +484,25 @@ mediatek_normal() {
 	# EAS/HMP Switch
 	apply 2 /sys/devices/system/cpu/eas/enable
 
-	# Enable GED KPI
+	# Enable GED KPI and reset GED Boost
 	apply 1 /sys/module/sspm_v3/holders/ged/parameters/is_GED_KPI_enabled
+	apply 0 /sys/module/ged/parameters/boost_gpu_enable
+	apply 0 /sys/module/ged/parameters/enable_gpu_boost
+	apply 0 /sys/module/ged/parameters/ged_smart_boost
+	apply 0 /sys/module/ged/parameters/gpu_bottom_freq
+
+	# sugov_ext Rate Limits (Normal balancing)
+	for policy in /sys/devices/system/cpu/cpufreq/policy*/sugov_ext; do
+		[ -d "$policy" ] && {
+			apply 500 "$policy/up_rate_limit_us"
+			apply 1000 "$policy/down_rate_limit_us"
+		}
+	done
 
 	# GPU Frequency
 	write 0 /proc/gpufreq/gpufreq_opp_freq
 	write -1 /proc/gpufreqv2/fix_target_opp_index
+	write -1 /proc/gpufreq/fix_target_opp_index
 
 	# Reset min freq via GED
 	if [ -d /proc/gpufreqv2 ]; then
@@ -614,6 +651,14 @@ tensor_normal() {
 mediatek_powersave() {
 	# Set MTK CPU Power mode to low power
 	apply 1 /proc/cpufreq/cpufreq_power_mode
+
+	# sugov_ext Rate Limits (Slow ramp-up, fast downscale for powersave)
+	for policy in /sys/devices/system/cpu/cpufreq/policy*/sugov_ext; do
+		[ -d "$policy" ] && {
+			apply 2000 "$policy/up_rate_limit_us"
+			apply 500 "$policy/down_rate_limit_us"
+		}
+	done
 
 	# GPU Frequency
 	if [ -d /proc/gpufreqv2 ]; then

@@ -119,6 +119,18 @@
             {{ $t('home_page.learn_encore.description') }}
           </p>
         </RippleComponent>
+
+        <!-- Fork Credit Badge -->
+        <div class="mt-6 mb-3 text-center text-xs text-on-surface-variant flex items-center justify-center gap-1.5 opacity-80">
+          <span>Encore-Fork</span>
+          <span>&bull;</span>
+          <span>Forked & Enhanced by</span>
+          <a
+            href="https://github.com/itswill00"
+            target="_blank"
+            class="font-semibold text-primary hover:underline"
+          >@itswill00</a>
+        </div>
       </div>
     </div>
   </div>

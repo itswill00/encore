@@ -4,7 +4,7 @@
     <div class="sticky top-0 z-10 bg-background">
       <div class="max-w-3xl mx-auto p-5 pb-3">
         <div class="flex justify-between items-center text-on-surface">
-          <h1 class="text-xl font-semibold">{{ $t('home_page.title') }}</h1>
+          <h1 class="text-xl font-semibold">Encore-Fork</h1>
         </div>
       </div>
     </div>

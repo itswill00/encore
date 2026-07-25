@@ -254,21 +254,27 @@ mediatek_performance() {
 	# EAS/HMP Switch
 	apply 0 /sys/devices/system/cpu/eas/enable
 
-	# Disable GED KPI and enable GED Boost
+	# Disable GED KPI and enable GED Boost (HyperFlow 800MHz GPU floor)
 	apply 0 /sys/module/sspm_v3/holders/ged/parameters/is_GED_KPI_enabled
 	apply 1 /sys/module/ged/parameters/boost_gpu_enable
 	apply 1 /sys/module/ged/parameters/enable_gpu_boost
 	apply 1 /sys/module/ged/parameters/ged_smart_boost
-	apply 550000 /sys/module/ged/parameters/gpu_bottom_freq
+	apply 800000 /sys/module/ged/parameters/gpu_bottom_freq
 	apply 25 /sys/module/ged/parameters/g_fb_dvfs_threshold
 	apply 50 /sys/module/ged/parameters/gx_fb_dvfs_margin
 
-	# sugov_ext Rate Limits (Instant Ramp-up)
-	for policy in /sys/devices/system/cpu/cpufreq/policy*/sugov_ext; do
-		[ -d "$policy" ] && {
-			apply 0 "$policy/up_rate_limit_us"
-			apply 2000 "$policy/down_rate_limit_us"
-		}
+	# sugov_ext Rate Limits & CPU Floors (HyperFlow Gaming profile)
+	for i in 0 1 2 3 4 5; do
+		write 1200000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_min_freq"
+		write 2000000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_max_freq"
+		write 0 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/up_rate_limit_us"
+		write 2500 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/down_rate_limit_us"
+	done
+	for i in 6 7; do
+		write 1600000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_min_freq"
+		write 2200000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_max_freq"
+		write 0 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/up_rate_limit_us"
+		write 2500 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/down_rate_limit_us"
 	done
 
 	# GPU Frequency
@@ -468,9 +474,9 @@ mediatek_normal() {
 		done
 	fi
 
-	# Free FPSGO
+	# Free FPSGO / Enable FBT boost_ta for UI smoothness
 	apply 2 /sys/kernel/fpsgo/common/force_onoff
-	apply 0 /sys/kernel/fpsgo/fbt/boost_ta
+	apply 1 /sys/kernel/fpsgo/fbt/boost_ta
 	apply 0 /sys/kernel/fpsgo/fbt/ultra_rescue
 	apply 0 /sys/kernel/fpsgo/fbt/switch_idleprefer
 
@@ -484,19 +490,25 @@ mediatek_normal() {
 	# EAS/HMP Switch
 	apply 2 /sys/devices/system/cpu/eas/enable
 
-	# Enable GED KPI and reset GED Boost
+	# Enable GED KPI and HyperFlow 550MHz GPU floor for UI smoothness
 	apply 1 /sys/module/sspm_v3/holders/ged/parameters/is_GED_KPI_enabled
-	apply 0 /sys/module/ged/parameters/boost_gpu_enable
-	apply 0 /sys/module/ged/parameters/enable_gpu_boost
-	apply 0 /sys/module/ged/parameters/ged_smart_boost
-	apply 0 /sys/module/ged/parameters/gpu_bottom_freq
+	apply 1 /sys/module/ged/parameters/boost_gpu_enable
+	apply 1 /sys/module/ged/parameters/enable_gpu_boost
+	apply 1 /sys/module/ged/parameters/ged_smart_boost
+	apply 550000 /sys/module/ged/parameters/gpu_bottom_freq
 
-	# sugov_ext Rate Limits (Normal balancing)
-	for policy in /sys/devices/system/cpu/cpufreq/policy*/sugov_ext; do
-		[ -d "$policy" ] && {
-			apply 500 "$policy/up_rate_limit_us"
-			apply 1000 "$policy/down_rate_limit_us"
-		}
+	# sugov_ext Rate Limits & CPU Floors (HyperFlow Interactive profile)
+	for i in 0 1 2 3 4 5; do
+		write 650000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_min_freq"
+		write 2000000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_max_freq"
+		write 500 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/up_rate_limit_us"
+		write 1000 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/down_rate_limit_us"
+	done
+	for i in 6 7; do
+		write 800000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_min_freq"
+		write 2200000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_max_freq"
+		write 500 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/up_rate_limit_us"
+		write 1000 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/down_rate_limit_us"
 	done
 
 	# GPU Frequency
@@ -652,12 +664,24 @@ mediatek_powersave() {
 	# Set MTK CPU Power mode to low power
 	apply 1 /proc/cpufreq/cpufreq_power_mode
 
-	# sugov_ext Rate Limits (Slow ramp-up, fast downscale for powersave)
-	for policy in /sys/devices/system/cpu/cpufreq/policy*/sugov_ext; do
-		[ -d "$policy" ] && {
-			apply 2000 "$policy/up_rate_limit_us"
-			apply 500 "$policy/down_rate_limit_us"
-		}
+	# FPSGO FBT reset
+	apply 0 /sys/kernel/fpsgo/fbt/boost_ta
+
+	# GED GPU Floor for powersave
+	apply 300000 /sys/module/ged/parameters/gpu_bottom_freq
+
+	# sugov_ext Rate Limits & CPU Caps (HyperFlow Sleep profile)
+	for i in 0 1 2 3 4 5; do
+		write 500000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_min_freq"
+		write 1450000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_max_freq"
+		write 2000 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/up_rate_limit_us"
+		write 500 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/down_rate_limit_us"
+	done
+	for i in 6 7; do
+		write 725000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_min_freq"
+		write 1300000 "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_max_freq"
+		write 2000 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/up_rate_limit_us"
+		write 500 "/sys/devices/system/cpu/cpu$i/cpufreq/sugov_ext/down_rate_limit_us"
 	done
 
 	# GPU Frequency
@@ -815,6 +839,26 @@ perfcommon() {
 	apply 0 /sys/module/cpufreq_bouncing/parameters/enable
 	apply 0 /proc/task_info/task_sched_info/task_sched_info_enable
 	apply 0 /proc/oplus_scheduler/sched_assist/sched_assist_enabled
+
+	# HyperFlow Cpuset tuning
+	if [ -d /dev/cpuset ]; then
+		apply "0-7" /dev/cpuset/top-app/cpus
+		apply "0-7" /dev/cpuset/foreground/cpus
+		apply "0-3" /dev/cpuset/background/cpus
+		apply "0-3" /dev/cpuset/system-background/cpus
+	fi
+
+	# HyperFlow Memory Pressure Stall (PSI) Auto-Trim
+	if [ -f /proc/pressure/memory ]; then
+		psi_some=$(grep "some" /proc/pressure/memory 2>/dev/null)
+		psi_some=${psi_some#*avg10=}
+		psi_some=${psi_some%% *}
+		psi_int=${psi_some%%.*}
+		if [ -n "$psi_int" ] && [ "$psi_int" -gt 4 ]; then
+			apply 3 /proc/sys/vm/drop_caches
+			apply 1 /proc/sys/vm/compact_memory
+		fi
+	fi
 
 	# Report max CPU capabilities to these libraries
 	apply "libunity.so, libil2cpp.so, libmain.so, libUE4.so, libgodot_android.so, libgdx.so, libgdx-box2d.so, libminecraftpe.so, libLive2DCubismCore.so, libyuzu-android.so, libryujinx.so, libcitra-android.so, libhdr_pro_engine.so, libandroidx.graphics.path.so, libeffect.so" /proc/sys/kernel/sched_lib_name

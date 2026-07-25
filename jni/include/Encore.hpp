@@ -22,7 +22,7 @@
 #define LOG_TAG "EncoreTweaks"
 
 #define CONFIG_DIR "/data/adb/.config/encore"
-#define MODPATH "/data/adb/modules/encore"
+#define MODPATH "/data/adb/modules/encore_fork"
 
 #define LOCK_FILE CONFIG_DIR "/.lock"
 #define JAVA_LOCK_FILE CONFIG_DIR "/java.lock"

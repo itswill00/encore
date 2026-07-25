@@ -1,8 +1,8 @@
-# Encore Tweaks Daemon
+# Encore-Fork Daemon
 
-This is the core of Encore Tweaks that handles automatic profiles, configs and addons.
+This is the core of Encore-Fork daemon that handles automatic profiles, configs and addons.
 
-Before you digging into this code thinking this is some kind of scheduling module like Uperf, it's not. Encore Tweaks is a profile-style performance module, it simply applies performance tweaks as profiles and  <ins>do not dynamically control the scheduling and frequencies</ins>.
+Before you dig into this code thinking this is some kind of scheduling module like Uperf, it's not. Encore-Fork is a profile-style performance module; it simply applies performance tweaks as profiles and <ins>does not dynamically control scheduling and frequencies</ins>.
 
 Encore Tweaks works by using information such as:
 - Currently running app

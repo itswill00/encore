@@ -7,16 +7,32 @@
     "name": "العربية",
     "dir": "rtl"
   },
+  "de": {
+    "name": "Deutsch",
+    "dir": "ltr"
+  },
   "es": {
     "name": "Español",
+    "dir": "ltr"
+  },
+  "fr": {
+    "name": "Français",
     "dir": "ltr"
   },
   "id": {
     "name": "Bahasa Indonesia",
     "dir": "ltr"
   },
+  "ko": {
+    "name": "한국어",
+    "dir": "ltr"
+  },
   "pt_BR": {
     "name": "Português (Brasil)",
+    "dir": "ltr"
+  },
+  "th": {
+    "name": "ไทย",
     "dir": "ltr"
   },
   "vi": {
@@ -37,6 +53,10 @@
   },
   "zh_CN": {
     "name": "中文 (简体)",
+    "dir": "ltr"
+  },
+  "zh_TW": {
+    "name": "中文 (繁體)",
     "dir": "ltr"
   },
   "tr": {

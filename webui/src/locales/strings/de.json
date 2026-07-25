@@ -1,0 +1,146 @@
+{
+    "home_page": {
+        "title": "Encore Tweaks",
+        "status_card": {
+            "running": "Aktiv ✨",
+            "stopped": "Gestoppt 💤",
+            "error": "Fehler ~",
+            "daemonPID": "Daemon PID: {pid}",
+            "daemon_inactive": "Dienst inaktiv",
+            "loading_daemon": "Einen Moment bitte…"
+        },
+        "info_card": {
+            "module": "Encore Tweaks",
+            "profile": "Aktuelles Profil",
+            "kernel": "Kernel",
+            "chipset": "Chipsatz",
+            "androidSDK": "Android SDK"
+        },
+        "support_button": {
+            "title": "Unterstützen",
+            "description": "Encore Tweaks ist und bleibt kostenlos. Sie können Ihre Wertschätzung jedoch mit einer Spende zeigen."
+        },
+        "learn_encore": {
+            "title": "Über Encore lernen",
+            "description": "Erfahren Sie, wie Sie Encore Tweaks und seine Funktionen nutzen."
+        }
+    },
+    "games_page": {
+        "title": "Meine Spiele",
+        "search_placeholder": "Apps suchen",
+        "no_apps_found": "Keine Apps gefunden",
+        "badges": {
+            "tweak_enabled": "Aktiviert"
+        }
+    },
+    "settings_page": {
+        "title": "Einstellungen",
+        "section": {
+            "preferences": "Einstellungen",
+            "system": "System",
+            "others": "Sonstiges"
+        },
+        "lite_mode": {
+            "title": "Lite-Modus erzwingen",
+            "description": "Lite-Modus standardmäßig für alle Spiele aktivieren"
+        },
+        "language": {
+            "title": "Sprache"
+        },
+        "device_mitigation": {
+            "title": "Gerätekompatibilität",
+            "description": "Gerätespezifische Probleme in Encore Tweaks abschwächen"
+        },
+        "log_level": {
+            "title": "Protokollierungsstufe",
+            "description": "Detaillierungsgrad des Protokolls von Encore Tweaks festlegen"
+        },
+        "save_log": {
+            "title": "Protokoll speichern",
+            "description": "Betriebsprotokoll von Encore Tweaks exportieren",
+            "exporting": "Protokolle werden gepackt, bitte warten…",
+            "success": "Protokoll erfolgreich gespeichert",
+            "failure": "Fehler beim Speichern des Protokolls"
+        },
+        "create_shortcut": {
+            "title": "Verknüpfung erstellen",
+            "description": "Erstellt eine Verknüpfung auf dem Startbildschirm für schnellen Zugriff"
+        },
+        "disable_tweaks": {
+            "title": "Tweaks deaktivieren",
+            "description": "Deaktiviert alle Leistungsoptimierungen von Encore Tweaks"
+        }
+    },
+    "game_settings": {
+        "title": "Spieleinstellungen",
+        "application": "Anwendung",
+        "preferences": "Einstellungen",
+        "enable_tweaks": "Tweaks aktivieren",
+        "lite_mode": "Lite-Modus",
+        "lite_mode_description": "Akkulaufzeit gegenüber Höchstleistung bevorzugen",
+        "dnd_mode": "Nicht stören",
+        "dnd_mode_description": "Benachrichtigungen und Anrufe beim Spielen blockieren",
+        "launch_app": "Starten",
+        "app_info": "App-Info"
+    },
+    "language_selection": {
+        "title": "Sprache",
+        "follow_system": "Systemstandard"
+    },
+    "log_level_selection": {
+        "title": "Protokollierungsstufe",
+        "level_0": "Kritisch",
+        "level_1": "Fehler",
+        "level_2": "Warnung",
+        "level_3": "Info",
+        "level_4": "Debug",
+        "level_5": "Trace"
+    },
+    "lite_mode": {
+        "title": "Lite-Modus",
+        "toggle_title": "Lite-Modus erzwingen",
+        "brief": "Der Lite-Modus reduziert Überhitzung und Stromverbrauch beim Spielen, indem er die CPU- und Komponentenfrequenzen begrenzt. Gilt für alle Spiele, wenn aktiviert."
+    },
+    "disable_tweaks": {
+        "title": "Tweaks deaktivieren",
+        "toggle_title": "Tweaks deaktivieren",
+        "brief": "Wenn aktiviert, werden alle integrierten Leistungsoptimierungen deaktiviert, sodass dieses Modul rein als Host für Encore-Addon-Module dient."
+    },
+    "device_mitigation": {
+        "title": "Gerätekompatibilität",
+        "toggle_title": "Gerätekompatibilität aktivieren",
+        "brief": "Deaktiviert potenziell inkompatible Tweaks für bestimmte Geräte. Lassen Sie es deaktiviert, es sei denn, Sie haben Probleme."
+    },
+    "reboot_modal": {
+        "title": "Neustart erforderlich",
+        "description": "Diese Änderung erfordert einen Neustart. Möchten Sie jetzt neu starten?",
+        "reboot": "Jetzt neu starten",
+        "later": "Später"
+    },
+    "profiles": {
+        "initializing": "Initialisierung",
+        "balanced": "Ausgewogen",
+        "powersave": "Energiesparen",
+        "performance": "Leistung"
+    },
+    "toast": {
+        "reboot_to_apply": "Starten Sie Ihr Gerät neu, um die Änderungen anzuwenden.",
+        "has_shortcut": "Verknüpfung existiert bereits.",
+        "shortcut_unavailable": "Keine API für diese Funktion verfügbar. Aktualisieren Sie Ihren Root-Manager.",
+        "failed_open_extrenal_browser": "Externer Browser konnte nicht geöffnet werden."
+    },
+    "navigation": {
+        "home": "Start",
+        "games": "Spiele",
+        "settings": "Einstellungen"
+    },
+    "common": {
+        "loading": "Wird geladen",
+        "unknown": "Unbekannt",
+        "enabled": "Aktiviert",
+        "disabled": "Deaktiviert",
+        "cancel": "Abbrechen",
+        "warning": "Warnung",
+        "ok": "OK"
+    }
+}

@@ -49,8 +49,8 @@ save_logs() {
 
 	{
 		echo "*****************************************************"
-		echo "Encore Tweaks Log"
-		echo "Module Version: $(awk -F'=' '/version=/ {print $2}' /data/adb/modules/encore/module.prop)"
+		echo "Encore-Fork Log"
+		echo "Module Version: $(awk -F'=' '/version=/ {print $2}' /data/adb/modules/encore_fork/module.prop 2>/dev/null || awk -F'=' '/version=/ {print $2}' /data/adb/modules/encore/module.prop 2>/dev/null)"
 		echo "Chipset: $SOC $(getprop ro.board.platform)"
 		echo "Fingerprint: $(getprop ro.build.fingerprint)"
 		echo "Android SDK: $(getprop ro.build.version.sdk)"
@@ -105,12 +105,12 @@ logcat() {
 
 	# Header
 	echo -e "\e[1;36m┌────────────────────────────────────────────┐"
-	echo -e "│          \e[1;37mEncore Tweaks Log Viewer\e[1;36m          │"
+	echo -e "│            \e[1;37mEncore-Fork Log Viewer\e[1;36m          │"
 	echo -e "└────────────────────────────────────────────┘\e[0m"
 
 	# Info block
 	echo -e "
-\e[1;32mModule Version:\e[0m $(awk -F'=' '/version=/ {print $2}' /data/adb/modules/encore/module.prop)
+\e[1;32mModule Version:\e[0m $(awk -F'=' '/version=/ {print $2}' /data/adb/modules/encore_fork/module.prop 2>/dev/null || awk -F'=' '/version=/ {print $2}' /data/adb/modules/encore/module.prop 2>/dev/null)
 \e[1;32mChipset:\e[0m        $SOC $(getprop ro.board.platform)
 \e[1;32mFingerprint:\e[0m    $(getprop ro.build.fingerprint)
 \e[1;32mAndroid SDK:\e[0m    $(getprop ro.build.version.sdk)

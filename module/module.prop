@@ -1,9 +1,8 @@
 id=encore_fork
 name=Encore-Fork
-version=v1.0.0 (Encore-Fork)
+version=v1.0.0
 versionCode=100
-author=Rem01Gaming (Forked & Enhanced)
-description=Special performance module for your Device (Optimized for MT6789).
-updateJson=
+author=@itswill00 (Inspired by Encore Tweaks)
+description=Performance tuning for Redmi Note 14 4G (tanzanite - MT6789).
 banner=banner.webp
 webuiIcon=webroot/icon.webp

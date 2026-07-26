@@ -221,26 +221,9 @@ else
   }
 fi
 
-# SOC CODE:
-# 1 = MediaTek
-# 2 = Qualcomm Snapdragon
-# 3 = Exynos
-# 4 = Unisoc
-# 5 = Google Tensor
-# 6 = Nvidia Tegra
-# 7 = Kirin
-
-# Recognize Chipset
-soc_recognition_extra
-[ $SOC -eq 0 ] && recognize_soc "$(</proc/device-tree/model)"
-[ $SOC -eq 0 ] && recognize_soc "$(get_soc_getprop)"
-[ $SOC -eq 0 ] && recognize_soc "$(grep -E "Hardware|Processor" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')"
-[ $SOC -eq 0 ] && recognize_soc "$(grep "model\sname" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')"
-[ $SOC -eq 0 ] && {
-	ui_print "! Unknown SoC, skipping some tweaks"
-	ui_print "! If you think this is wrong, please report to maintainer"
-}
-
+# Target Chipset: MediaTek MT6789 (Redmi Note 14 4G - tanzanite)
+SOC=1
+ui_print "- Implementing tweaks for MediaTek MT6789 (tanzanite)"
 echo $SOC >"$MODULE_CONFIG/soc_recognition"
 
 # Easter Egg

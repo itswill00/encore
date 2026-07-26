@@ -70,7 +70,7 @@ std::atomic<bool> daemon_stop_requested{false};
 // ---------------------------------------------------------------------------
 
 void set_module_description_status(const std::string &status) {
-    const std::string description = "[" + status + "] Special performance module for your Device.";
+    const std::string description = "[" + status + "] Performance tuning for Redmi Note 14 4G (tanzanite - MT6789).";
     const std::vector<ModuleProperties> props{{"description", description}};
     try {
         ModuleProperty::Change(MODULE_PROP, props);

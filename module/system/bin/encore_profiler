@@ -874,6 +874,15 @@ performance_profile() {
 	LITE_MODE=0
 	[ "$1" = "lite" ] && LITE_MODE=1
 
+	# Thermal Safety Auto-Throttle (>44°C / 440 in tenths of °C)
+	if [ -f /sys/class/power_supply/battery/temp ]; then
+		batt_temp=$(cat /sys/class/power_supply/battery/temp 2>/dev/null)
+		if [ -n "$batt_temp" ] && [ "$batt_temp" -ge 440 ] 2>/dev/null; then
+			echo "Battery temperature high (${batt_temp}), enforcing Lite Mode for thermal safety" >&2
+			LITE_MODE=1
+		fi
+	fi
+
 	# Disable battery saver module
 	[ -f /sys/module/battery_saver/parameters/enabled ] && {
 		if grep -qo '[0-9]\+' /sys/module/battery_saver/parameters/enabled; then

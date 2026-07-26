@@ -157,12 +157,11 @@ extract "$ZIPFILE" 'system/bin/encore_profiler' "$MODPATH"
 extract "$ZIPFILE" 'system/bin/encore_utility' "$MODPATH"
 cp "$MODPATH/module.prop" "$MODPATH/module.prop.orig"
 
-# Target architecture
-case $ARCH in
-"arm64") ARCH_TMP="arm64-v8a" ;;
-"arm") ARCH_TMP="armeabi-v7a" ;;
-*) abort_unsupported_arch ;;
-esac
+# Target architecture (ARM64 only)
+if [ "$ARCH" != "arm64" ]; then
+  abort_unsupported_arch
+fi
+ARCH_TMP="arm64-v8a"
 
 # Extract executables
 extract "$ZIPFILE" "libs/$ARCH_TMP/encored" "$TMPDIR"

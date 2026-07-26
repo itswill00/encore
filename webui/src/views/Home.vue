@@ -124,33 +124,28 @@
           </div>
         </div>
 
-        <!-- Support Me Button -->
-        <RippleComponent
-          @click="handleDonateClick"
-          tabindex="0"
-          class="cursor-pointer text-on-surface bg-surface-container mb-4 p-4 py-5 rounded-xl w-full block"
-        >
-          <h2 class="text-sm font-medium px-2 mb-1 relative z-10">
-            {{ $t('home_page.support_button.title') }}
-          </h2>
-          <p class="text-sm text-on-surface-variant px-2 mb-1 relative z-10">
-            {{ $t('home_page.support_button.description') }}
-          </p>
-        </RippleComponent>
-
-        <!-- Learn Encore -->
-        <RippleComponent
-          @click="handleGuideClick"
-          tabindex="0"
-          class="cursor-pointer text-on-surface bg-surface-container mb-4 p-4 py-5 rounded-xl w-full block"
-        >
-          <h2 class="text-sm font-medium px-2 mb-1 relative z-10">
-            {{ $t('home_page.learn_encore.title') }}
-          </h2>
-          <p class="text-sm text-on-surface-variant px-2 mb-1 relative z-10">
-            {{ $t('home_page.learn_encore.description') }}
-          </p>
-        </RippleComponent>
+        <!-- Live Daemon Log Monitor Card -->
+        <div class="bg-surface-container mb-4 p-4 rounded-xl text-on-surface">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <div class="flex items-center gap-2.5">
+              <ConsoleIcon class="text-primary w-5 h-5 shrink-0" />
+              <h2 class="text-sm font-semibold text-on-surface">Live Daemon Log</h2>
+            </div>
+            <button
+              @click="fetchDaemonLogs"
+              class="p-1.5 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant"
+              title="Refresh Log"
+            >
+              <RefreshIcon class="w-4 h-4 shrink-0" />
+            </button>
+          </div>
+          <div
+            ref="logContainer"
+            class="bg-surface-container-high/60 p-3 rounded-lg font-mono text-xs text-on-surface-variant overflow-y-auto max-h-56 leading-relaxed select-text whitespace-pre-wrap word-break-all"
+          >
+            {{ daemonLogs || 'Loading daemon logs...' }}
+          </div>
+        </div>
 
         <!-- Fork Credit Badge -->
         <div class="mt-6 mb-3 text-center text-xs text-on-surface-variant flex items-center justify-center gap-1.5 opacity-80">
@@ -169,20 +164,24 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, computed } from 'vue'
+import { onMounted, onUnmounted, computed, ref, nextTick } from 'vue'
 import { useHomeStore } from '@/stores/Home'
 import * as KernelSU from '@/helpers/KernelSU'
 import { useI18n } from 'vue-i18n'
 
-import RippleComponent from '@/components/ui/Ripple.vue'
 import StarIcon from '@/components/icons/Star.vue'
 import StarlyGear from '@/components/icons/StarlyGear.vue'
 import ConsoleIcon from '@/components/icons/Console.vue'
 import ChipsetIcon from '@/components/icons/Chipset.vue'
 import AndroidIcon from '@/components/icons/Android.vue'
+import RefreshIcon from '@/components/icons/Refresh.vue'
 
 const { t } = useI18n()
 const homeStore = useHomeStore()
+
+const daemonLogs = ref('')
+const logContainer = ref(null)
+let logTimer = null
 
 function displayValue(value) {
   if (value === 'unknown' || !value) {
@@ -216,20 +215,33 @@ const currentProfileText = computed(() => {
   return translation !== `profiles.${profileKey}` ? translation : profileKey
 })
 
+async function fetchDaemonLogs() {
+  try {
+    const logs = await KernelSU.readFile('/data/adb/.config/encore/encore.log')
+    if (logs) {
+      const lines = logs.split('\n')
+      daemonLogs.value = lines.slice(-60).join('\n')
+    } else {
+      daemonLogs.value = 'No logs available.'
+    }
+  } catch (e) {
+    daemonLogs.value = 'Waiting for log entries...'
+  }
+  await nextTick()
+  if (logContainer.value) {
+    logContainer.value.scrollTop = logContainer.value.scrollHeight
+  }
+}
+
 onMounted(async () => {
   await homeStore.initializeData()
+  await fetchDaemonLogs()
+  logTimer = setInterval(fetchDaemonLogs, 3000)
 })
 
 onUnmounted(() => {
+  if (logTimer) clearInterval(logTimer)
   homeStore.stopProfileMonitoring()
   homeStore.stopDaemonMonitoring()
 })
-
-function handleGuideClick() {
-  KernelSU.openWebsite('https://encore.rem01gaming.dev')
-}
-
-function handleDonateClick() {
-  KernelSU.openWebsite('https://t.me/rem01schannel/670')
-}
 </script>

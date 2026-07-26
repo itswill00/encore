@@ -13,9 +13,14 @@ export const useHomeStore = defineStore('home', () => {
   const kernelVersion = ref('')
   const chipsetName = ref('')
   const androidSDK = ref('')
+  const androidVersion = ref('')
+  const deviceModel = ref('')
+  const cpuGovernor = ref('')
+  const selinuxMode = ref('')
+  const memoryInfo = ref('')
   const deviceCodename = ref('')
   const isTanzaniteDevice = ref(false)
-  const daemonStatusRaw = ref('loading') // 'loading', 'running', 'stopped', 'error'
+  const daemonStatusRaw = ref('loading')
   const daemonError = ref('')
   const logoImage = ref('/encore_sleeping.avif')
   const isInitialized = ref(false)
@@ -30,10 +35,15 @@ export const useHomeStore = defineStore('home', () => {
     await Promise.all([
       getServiceState(),
       getAndroidSDK(),
+      getAndroidVersion(),
+      getDeviceModel(),
       getModuleVersion(),
       getCurrentProfile(),
       getKernelVersion(),
       getChipset(),
+      getCpuGovernor(),
+      getSelinuxMode(),
+      getMemoryInfo(),
       getDeviceCodename(),
     ])
 
@@ -44,10 +54,10 @@ export const useHomeStore = defineStore('home', () => {
 
   function startProfileMonitoring() {
     stopProfileMonitoring()
-
     profileInterval = setInterval(() => {
       getCurrentProfile()
-    }, 1000)
+      getCpuGovernor()
+    }, 2000)
   }
 
   function stopProfileMonitoring() {
@@ -59,10 +69,9 @@ export const useHomeStore = defineStore('home', () => {
 
   function startDaemonMonitoring() {
     stopDaemonMonitoring()
-
     daemonInterval = setInterval(() => {
       getServiceState()
-    }, 1000)
+    }, 2000)
   }
 
   function stopDaemonMonitoring() {
@@ -90,7 +99,6 @@ export const useHomeStore = defineStore('home', () => {
       }
 
       setDaemonStopped()
-      return
     } catch (error) {
       setDaemonError(error.message)
     }
@@ -111,14 +119,31 @@ export const useHomeStore = defineStore('home', () => {
 
   async function getAndroidSDK() {
     try {
-      if (!KernelSU.isKSUWebUI()) {
-        throw new Error('Not running on KSU WebUI')
-      }
-
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
       const { stdout } = await exec('getprop ro.build.version.sdk')
       androidSDK.value = stdout.trim()
     } catch (error) {
       androidSDK.value = 'unknown'
+    }
+  }
+
+  async function getAndroidVersion() {
+    try {
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
+      const { stdout } = await exec('getprop ro.build.version.release')
+      androidVersion.value = stdout.trim() ? `Android ${stdout.trim()}` : 'unknown'
+    } catch (error) {
+      androidVersion.value = 'unknown'
+    }
+  }
+
+  async function getDeviceModel() {
+    try {
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
+      const { stdout } = await exec('getprop ro.product.model')
+      deviceModel.value = stdout.trim() || 'unknown'
+    } catch (error) {
+      deviceModel.value = 'unknown'
     }
   }
 
@@ -154,10 +179,7 @@ export const useHomeStore = defineStore('home', () => {
 
   async function getKernelVersion() {
     try {
-      if (!KernelSU.isKSUWebUI()) {
-        throw new Error('Not running on KSU WebUI')
-      }
-
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
       const { stdout } = await exec('uname -r -m')
       kernelVersion.value = stdout.trim()
     } catch (error) {
@@ -167,15 +189,11 @@ export const useHomeStore = defineStore('home', () => {
 
   async function getChipset() {
     try {
-      if (!KernelSU.isKSUWebUI()) {
-        throw new Error('Not running on KSU WebUI')
-      }
-
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
       const { stdout } = await exec('getprop ro.board.platform')
       const chipset = stdout.trim()
       const brand = await getChipsetBrand()
-
-      chipsetName.value = `${brand} ${chipset}`
+      chipsetName.value = `${brand} ${chipset}`.trim()
     } catch (error) {
       chipsetName.value = 'unknown'
     }
@@ -200,12 +218,47 @@ export const useHomeStore = defineStore('home', () => {
     }
   }
 
+  async function getCpuGovernor() {
+    try {
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
+      const { stdout } = await exec('cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor')
+      cpuGovernor.value = stdout.trim() || 'unknown'
+    } catch (error) {
+      cpuGovernor.value = 'unknown'
+    }
+  }
+
+  async function getSelinuxMode() {
+    try {
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
+      const { stdout } = await exec('getenforce')
+      selinuxMode.value = stdout.trim() || 'unknown'
+    } catch (error) {
+      selinuxMode.value = 'unknown'
+    }
+  }
+
+  async function getMemoryInfo() {
+    try {
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
+      const { stdout } = await exec('cat /proc/meminfo')
+      const totalMatch = stdout.match(/MemTotal:\s+(\d+)/)
+      const availMatch = stdout.match(/MemAvailable:\s+(\d+)/)
+      if (totalMatch && availMatch) {
+        const totalGb = (parseInt(totalMatch[1], 10) / (1024 * 1024)).toFixed(1)
+        const availGb = (parseInt(availMatch[1], 10) / (1024 * 1024)).toFixed(1)
+        memoryInfo.value = `${availGb} GB free / ${totalGb} GB`
+      } else {
+        memoryInfo.value = 'unknown'
+      }
+    } catch (error) {
+      memoryInfo.value = 'unknown'
+    }
+  }
+
   async function getDeviceCodename() {
     try {
-      if (!KernelSU.isKSUWebUI()) {
-        throw new Error('Not running on KSU WebUI')
-      }
-
+      if (!KernelSU.isKSUWebUI()) throw new Error('Not running on KSU WebUI')
       const { stdout } = await exec('getprop ro.product.device')
       const device = stdout.trim().toLowerCase()
       deviceCodename.value = device
@@ -217,13 +270,17 @@ export const useHomeStore = defineStore('home', () => {
   }
 
   return {
-    // Raw state
     daemonPidRaw,
     moduleVersion,
     currentProfileRaw,
     kernelVersion,
     chipsetName,
     androidSDK,
+    androidVersion,
+    deviceModel,
+    cpuGovernor,
+    selinuxMode,
+    memoryInfo,
     deviceCodename,
     isTanzaniteDevice,
     daemonStatusRaw,
@@ -231,16 +288,20 @@ export const useHomeStore = defineStore('home', () => {
     logoImage,
     isInitialized,
 
-    // Actions
     initializeData,
     stopProfileMonitoring,
     stopDaemonMonitoring,
     getServiceState,
     getAndroidSDK,
+    getAndroidVersion,
+    getDeviceModel,
     getModuleVersion,
     getCurrentProfile,
     getKernelVersion,
     getChipset,
+    getCpuGovernor,
+    getSelinuxMode,
+    getMemoryInfo,
     getDeviceCodename,
   }
 })

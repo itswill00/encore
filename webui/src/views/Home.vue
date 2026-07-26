@@ -29,9 +29,27 @@
           </div>
         </div>
 
-        <!-- Device & Module Info -->
+        <!-- System Specifications & Module Info -->
         <div class="bg-surface-container mb-4 p-4 rounded-xl text-on-surface">
-          <div class="space-y-4">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3 px-1">
+            System Specifications
+          </h2>
+
+          <div class="space-y-3.5">
+            <!-- Device Model -->
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <AndroidIcon class="text-primary shrink-0 w-5 h-5" />
+                <h3 class="text-sm font-medium text-on-surface truncate">
+                  Device Model
+                </h3>
+              </div>
+              <span class="allow-copy text-xs text-on-surface-variant font-medium shrink-0">{{
+                displayValue(homeStore.deviceModel)
+              }}</span>
+            </div>
+
+            <!-- Module Version -->
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 <StarIcon class="text-primary shrink-0 w-5 h-5" />
@@ -44,6 +62,7 @@
               }}</span>
             </div>
 
+            <!-- Profile -->
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 <StarlyGear class="text-primary shrink-0 w-5 h-5" />
@@ -56,18 +75,33 @@
               }}</span>
             </div>
 
+            <!-- CPU Governor -->
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
-                <ConsoleIcon class="text-primary shrink-0 w-5 h-5" />
+                <TuneIcon class="text-primary shrink-0 w-5 h-5" />
                 <h3 class="text-sm font-medium text-on-surface truncate">
-                  {{ $t('home_page.info_card.kernel') }}
+                  CPU Governor
                 </h3>
               </div>
-              <span class="allow-copy text-xs text-on-surface-variant font-medium truncate max-w-[180px]">{{
-                displayValue(homeStore.kernelVersion)
+              <span class="allow-copy text-xs text-on-surface-variant font-medium shrink-0">{{
+                displayValue(homeStore.cpuGovernor)
               }}</span>
             </div>
 
+            <!-- System Memory -->
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <CandyIcon class="text-primary shrink-0 w-5 h-5" />
+                <h3 class="text-sm font-medium text-on-surface truncate">
+                  Memory (RAM)
+                </h3>
+              </div>
+              <span class="allow-copy text-xs text-on-surface-variant font-medium shrink-0">{{
+                displayValue(homeStore.memoryInfo)
+              }}</span>
+            </div>
+
+            <!-- Chipset -->
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 <ChipsetIcon class="text-primary shrink-0 w-5 h-5" />
@@ -80,15 +114,42 @@
               }}</span>
             </div>
 
+            <!-- Kernel -->
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <ConsoleIcon class="text-primary shrink-0 w-5 h-5" />
+                <h3 class="text-sm font-medium text-on-surface truncate">
+                  {{ $t('home_page.info_card.kernel') }}
+                </h3>
+              </div>
+              <span class="allow-copy text-xs text-on-surface-variant font-medium truncate max-w-[180px]">{{
+                displayValue(homeStore.kernelVersion)
+              }}</span>
+            </div>
+
+            <!-- Android Version & SDK -->
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 <AndroidIcon class="text-primary shrink-0 w-5 h-5" />
                 <h3 class="text-sm font-medium text-on-surface truncate">
-                  {{ $t('home_page.info_card.androidSDK') }}
+                  Android & SDK
+                </h3>
+              </div>
+              <span class="allow-copy text-xs text-on-surface-variant font-medium shrink-0">
+                {{ displayValue(homeStore.androidVersion) }} (API {{ displayValue(homeStore.androidSDK) }})
+              </span>
+            </div>
+
+            <!-- SELinux Status -->
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <CheckCircleIcon class="text-primary shrink-0 w-5 h-5" />
+                <h3 class="text-sm font-medium text-on-surface truncate">
+                  SELinux Status
                 </h3>
               </div>
               <span class="allow-copy text-xs text-on-surface-variant font-medium shrink-0">{{
-                displayValue(homeStore.androidSDK)
+                displayValue(homeStore.selinuxMode)
               }}</span>
             </div>
           </div>
@@ -145,6 +206,9 @@ import ConsoleIcon from '@/components/icons/Console.vue'
 import ChipsetIcon from '@/components/icons/Chipset.vue'
 import AndroidIcon from '@/components/icons/Android.vue'
 import RefreshIcon from '@/components/icons/Refresh.vue'
+import TuneIcon from '@/components/icons/Tune.vue'
+import CandyIcon from '@/components/icons/Candy.vue'
+import CheckCircleIcon from '@/components/icons/CheckCircle.vue'
 
 const { t } = useI18n()
 const homeStore = useHomeStore()
